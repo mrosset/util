@@ -1,6 +1,7 @@
 package unix
 
 import (
+	"log"
 	"os"
 )
 
@@ -13,4 +14,10 @@ func FileExists(path string) bool {
 		return true
 	}
 	return false
+}
+
+func CheckFatal(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
 }
