@@ -1,6 +1,7 @@
 package util
 
 import (
+	"errors"
 	"testing"
 )
 
@@ -25,4 +26,9 @@ func TestFileExists(t *testing.T) {
 		}
 		t.Logf("%s -> %v", f, exists)
 	}
+}
+
+func TestCheckFatal(t *testing.T) {
+	err := errors.New("this shoould be fatal")
+	CheckFatal(err)
 }
