@@ -1,6 +1,7 @@
 package console
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"testing"
@@ -29,4 +30,5 @@ func TestProgress(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	fmt.Println()
 }
