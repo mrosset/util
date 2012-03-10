@@ -1,18 +1,17 @@
-package util
+package file
 
 import (
-	"errors"
 	"testing"
 )
 
 var (
-	existsFiles   = []string{"util.go", "util.go"}
+	existsFiles   = []string{"../util.go", "file.go"}
 	notExistFiles = []string{"aaaaaaaa", "bbbbbbbbb"}
 )
 
-func TestFileExists(t *testing.T) {
+func TestExists(t *testing.T) {
 	for _, f := range existsFiles {
-		exists := FileExists(f)
+		exists := Exists(f)
 		if !exists {
 			t.Errorf("expect to find %s got %v", f, exists)
 		}
@@ -20,15 +19,10 @@ func TestFileExists(t *testing.T) {
 	}
 
 	for _, f := range notExistFiles {
-		exists := FileExists(f)
+		exists := Exists(f)
 		if exists {
 			t.Errorf("expect not to find %s got %v", f, exists)
 		}
 		t.Logf("%s -> %v", f, exists)
 	}
-}
-
-func TestCheckFatal(t *testing.T) {
-	err := errors.New("this shoould be fatal")
-	CheckFatal(err)
 }
