@@ -1,8 +1,10 @@
 package util
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -10,7 +12,10 @@ import (
 	"runtime"
 )
 
-var Verbose = true
+var (
+	Verbose = false
+	errbuf  = new(bytes.Buffer)
+)
 
 func init() {
 	log.SetFlags(0)
@@ -31,5 +36,10 @@ func Run(bin, dir string, args ...string) (err error) {
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 	}
-	return cmd.Run()
+	cmd.Stderr = errbuf
+	if err = cmd.Run(); err != nil {
+		io.Copy(os.Stderr, errbuf)
+		return err
+	}
+	return nil
 }
