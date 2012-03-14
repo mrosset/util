@@ -1,8 +1,6 @@
 package file
 
 import (
-	"fmt"
-	"path/filepath"
 	"testing"
 )
 
@@ -29,13 +27,9 @@ func TestExists(t *testing.T) {
 	}
 }
 
-func TestMagic(t *testing.T) {
-	files, _ := filepath.Glob("/home/strings//via/cache/sources/*")
-	for _, file := range files {
-		m, err := GetFileMagic(file)
-		if err != nil {
-			t.Error(err)
-		}
-		fmt.Printf("%-40.40s %v\n", filepath.Base(file), m)
+func testCat(t *testing.T) {
+	err := Cat("file.go")
+	if err != nil {
+		t.Error(err)
 	}
 }

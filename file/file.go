@@ -6,14 +6,8 @@ import (
 )
 
 func Exists(path string) bool {
-	fi, err := os.Stat(path)
-	if err != nil {
-		return false
-	}
-	if !fi.IsDir() || fi.IsDir() || fi.Mode() == os.ModeSymlink {
-		return true
-	}
-	return false
+	_, err := os.Stat(path)
+	return !os.IsNotExist(err)
 }
 
 func Copy(path string, w io.Writer) error {
@@ -23,5 +17,15 @@ func Copy(path string, w io.Writer) error {
 	}
 	defer fd.Close()
 	_, err = io.Copy(w, fd)
+	return err
+}
+
+func Cat(path string) error {
+	fd, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+	defer fd.Close()
+	_, err = io.Copy(os.Stderr, fd)
 	return err
 }
