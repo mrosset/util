@@ -24,11 +24,11 @@ func (self *ProgressBarWriter) Write(b []byte) (n int, err error) {
 	case self.total > 0:
 		self.done = self.done + int64(len(b))
 		percent := int((self.done * 100) / self.total)
-		width := (80 - 9) - 30
+		width := (80 - 9) - 32
 		progress := (width * percent) / 100
 		bar := strings.Repeat("#", int(progress))
 		bps := float64(self.done) / time.Now().Sub(self.start).Seconds()
-		fmt.Printf("\r%-20.20s [%-*s] %s %3.3s%%", self.prefix, width, bar, ByteSize(bps), strconv.Itoa(percent))
+		fmt.Printf("\r%-20.20s [%-*s] %s/s %3.3s%%", self.prefix, width, bar, ByteSize(bps), strconv.Itoa(percent))
 	default:
 		fmt.Printf("\r%-20.20s", self.prefix)
 	}
