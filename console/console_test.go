@@ -8,7 +8,7 @@ import (
 )
 
 //var testfile = "Mac.OSX.Lion.10.7.2.dmg"
-var testfile = "console.go"
+var testfile = "progress.go"
 
 func TestProgress(t *testing.T) {
 	fi, err := os.Stat(testfile)
@@ -25,6 +25,7 @@ func TestProgress(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer nw.Close()
+	defer os.Remove("new.file")
 	pw := NewProgressBarWriter(testfile, fi.Size(), nw)
 	_, err = io.Copy(pw, fd)
 	if err != nil {
