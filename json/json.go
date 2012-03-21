@@ -1,12 +1,15 @@
 package json
 
 import (
+	"bufio"
 	"bytes"
 	"compress/gzip"
 	"encoding/json"
 	"fmt"
 	"io"
 	"os"
+	"strings"
+	"text/tabwriter"
 	"util/file"
 )
 
@@ -62,23 +65,13 @@ func Write(v interface{}, path string) (err error) {
 		return err
 	}
 	defer fd.Close()
-	b, err := json.Marshal(v)
-	if err != nil {
-		return err
-	}
-	buf := new(bytes.Buffer)
-	err = json.Indent(buf, b, "", "\t")
-	if err != nil {
-		return err
-	}
-	_, err = io.Copy(fd, buf)
-	return err
+	return WritePretty(v, fd)
 }
 
 // Read opens a json file and decodes it into interface
 func Read(v interface{}, path string) (err error) {
 	if !file.Exists(path) {
-		return fmt.Errorf("%s does not exits.", path)
+		return fmt.Errorf("%s does not exist.", path)
 	}
 	fd, err := os.Open(path)
 	if err != nil {
@@ -92,8 +85,8 @@ func Read(v interface{}, path string) (err error) {
 	return err
 }
 
-// PrintPretty marshal's an interface and ouputs formatted json.
-func PrintPretty(v interface{}, w io.Writer) (err error) {
+// PrintPretty marshal's an interface and ouputs formatted json to writer.
+func WritePretty(v interface{}, writer io.Writer) (err error) {
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -103,6 +96,22 @@ func PrintPretty(v interface{}, w io.Writer) (err error) {
 	if err != nil {
 		return err
 	}
-	_, err = io.Copy(w, buf)
-	return err
+	br := bufio.NewReader(buf)
+	tw := tabwriter.NewWriter(writer, 8, 0, 1, ' ', 0)
+	for {
+		b, _, err := br.ReadLine()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+		line := string(b) + "\n"
+		line = strings.Replace(line, ": \"", ":\t\"", -1)
+		_, err = tw.Write([]byte(line))
+		if err != nil {
+			return err
+		}
+	}
+	return tw.Flush()
 }
