@@ -7,15 +7,14 @@ import (
 )
 
 var (
-	tw = tabwriter.NewWriter(os.Stderr, 8, 0, 1, ' ', 0)
+	tw = tabwriter.NewWriter(os.Stderr, 1, 0, 1, ' ', 0)
 )
 
 func Println(a ...interface{}) {
-	var na []interface{}
 	for _, i := range a {
-		na = append(na, i, "\t")
+		fmt.Fprintf(tw, "%v\t", i)
 	}
-	fmt.Fprintln(tw, na...)
+	fmt.Fprintf(tw, "\n")
 }
 
 func Flush() {

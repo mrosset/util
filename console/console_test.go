@@ -7,8 +7,7 @@ import (
 	"testing"
 )
 
-//var testfile = "Mac.OSX.Lion.10.7.2.dmg"
-var testfile = "progress.go"
+var testfile = "writers.go"
 
 func TestProgress(t *testing.T) {
 	fi, err := os.Stat(testfile)
