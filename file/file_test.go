@@ -1,6 +1,8 @@
 package file
 
 import (
+	"os"
+	"path"
 	"testing"
 )
 
@@ -24,6 +26,20 @@ func TestExists(t *testing.T) {
 			t.Errorf("expect not to find %s got %v", f, exists)
 		}
 		t.Logf("%s -> %v", f, exists)
+	}
+}
+
+func TestExpand(t *testing.T) {
+	expect := os.Getenv("HOME")
+	if got := Path("$HOME").Expand(); got != expect {
+		t.Errorf("expected %s got %s", expect, got)
+	}
+}
+
+func TestJoin(t *testing.T) {
+	expect := path.Join(os.Getenv("HOME"), "test")
+	if got := Path("$HOME").Add("test"); got != expect {
+		t.Errorf("expected %s got %s", expect, got)
 	}
 }
 

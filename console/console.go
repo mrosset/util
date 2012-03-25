@@ -11,8 +11,8 @@ var (
 )
 
 func Println(a ...interface{}) {
-	for _, i := range a {
-		fmt.Fprintf(tw, "%v\t", i)
+	for _, j := range a {
+		fmt.Fprintf(tw, "%v\t", j)
 	}
 	fmt.Fprintf(tw, "\n")
 }

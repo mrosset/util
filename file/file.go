@@ -3,7 +3,18 @@ package file
 import (
 	"io"
 	"os"
+	"path"
 )
+
+type Path string
+
+func (p Path) Expand() string {
+	return os.ExpandEnv(string(p))
+}
+
+func (p Path) Add(s string) string {
+	return path.Join(p.Expand(), string(s))
+}
 
 func Exists(path string) bool {
 	_, err := os.Stat(path)
