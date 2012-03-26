@@ -11,7 +11,11 @@ var (
 )
 
 func Println(a ...interface{}) {
-	for _, j := range a {
+	for i, j := range a {
+		if i == len(a)-1 {
+			fmt.Fprintf(tw, "%v", j)
+			continue
+		}
 		fmt.Fprintf(tw, "%v\t", j)
 	}
 	fmt.Fprintf(tw, "\n")
