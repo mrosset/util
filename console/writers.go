@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"util/human"
+	"github.com/str1ngs/util/human"
 )
 
 type ProgressBarWriter struct {
