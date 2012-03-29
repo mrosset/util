@@ -13,7 +13,7 @@ func TestRun(t *testing.T) {
 
 func TestRunFail(t *testing.T) {
 	err := Run("git", ".", "asdfasdf")
-	if err != nil {
+	if err == nil {
 		t.Error(err)
 	}
 }
