@@ -2,11 +2,11 @@ package console
 
 import (
 	"fmt"
+	"github.com/str1ngs/util/human"
 	"io"
 	"strconv"
 	"strings"
 	"time"
-	"github.com/str1ngs/util/human"
 )
 
 type ProgressBarWriter struct {

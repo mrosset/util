@@ -1,29 +1,34 @@
 package console
 
 import (
-	"path/filepath"
+	"fmt"
+	"io"
+	"os"
 	"testing"
 )
 
-func TestConsoleOutput(t *testing.T) {
-	var (
-		long  = "looooooooooooooooooooooooooooooooooooooooooooooooooooooooooog"
-		short = "short"
-	)
-	for i := 0; i < 4; i++ {
-		Println(long, i)
-		Println(short, i)
-	}
-	Flush()
-}
+var testfile = "writers.go"
 
-func TestFileList(t *testing.T) {
-	files, err := filepath.Glob("/home/strings/*")
+func TestProgress(t *testing.T) {
+	fi, err := os.Stat(testfile)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
-	for _, _ = range files {
-		//Println(f)
+	fd, err := os.Open(testfile)
+	if err != nil {
+		t.Fatal(err)
 	}
-	Flush()
+	defer fd.Close()
+	nw, err := os.Create("new.file")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer nw.Close()
+	defer os.Remove("new.file")
+	pw := NewProgressBarWriter(testfile, fi.Size(), nw)
+	_, err = io.Copy(pw, fd)
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Println()
 }
