@@ -4,6 +4,7 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
+	"net/http"
 	"os"
 )
 
@@ -29,6 +30,7 @@ const (
 	MagicPosixTar
 	MagicGnuTar
 	MagicBzip
+	MagicMP3
 )
 
 var (
@@ -37,6 +39,7 @@ var (
 		FileMagic{MagicPosixTar, MagicBytes{99, 99}, "POSIX tar archive (GNU)"},
 		FileMagic{MagicGnuTar, MagicBytes{109, 112}, "tar archive"},
 		FileMagic{MagicBzip, MagicBytes{66, 90}, "bzip compressed data"},
+		FileMagic{MagicMP3, MagicBytes{73, 68}, "MPEG Layer III audio"},
 	}
 )
 
@@ -90,4 +93,18 @@ func GetReader(path string) (r io.Reader, err error) {
 		return fd, nil
 	}
 	return nil, fmt.Errorf("Unknown reader for: %s", path)
+}
+
+func ContentType(path string) (ct string, err error) {
+	b := make([]byte, 512)
+	fd, err := os.Open(path)
+	if err != nil {
+		return "", err
+	}
+	defer fd.Close()
+	_, err = fd.Read(b)
+	if err != nil {
+		return "", err
+	}
+	return http.DetectContentType(b), nil
 }
