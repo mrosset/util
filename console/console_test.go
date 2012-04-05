@@ -1,13 +1,15 @@
 package console
 
 import (
+	"os"
 	"path"
 	"path/filepath"
 	"testing"
 )
 
 func TestFileList(t *testing.T) {
-	files, err := filepath.Glob("/home/strings/*")
+	home := os.ExpandEnv("$HOME/*")
+	files, err := filepath.Glob(home)
 	if err != nil {
 		t.Error(err)
 	}
