@@ -6,11 +6,11 @@ import (
 	"compress/gzip"
 	"encoding/json"
 	"fmt"
+	"github.com/str1ngs/util/file"
 	"io"
 	"os"
 	"strings"
 	"text/tabwriter"
-	"util/file"
 )
 
 // WriteGzJson marshal's a interface, and writes it to a gzipped file.
