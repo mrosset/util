@@ -13,10 +13,12 @@ func TestCommands(t *testing.T) {
 	}
 }
 
-func test() {
+func test() error {
 	fmt.Println("test run here")
+	return nil
 }
 
-func test1() {
+func test1() error {
 	fmt.Println("test1 run here")
+	return nil
 }

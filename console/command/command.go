@@ -8,9 +8,9 @@ import (
 )
 
 type Command struct {
-	Name  string // Name of the command line argument
-	Run   func() // Function associated with command
-	Usage string // Usage test
+	Name  string       // Name of the command line argument
+	Run   func() error // Function associated with command
+	Usage string       // Usage test
 }
 
 var (
@@ -18,20 +18,19 @@ var (
 )
 
 // Starts the command pass on command line
-func Run() {
+func Run() error {
 	flag.Parse()
 	args := flag.Args()
 	if len(args) < 1 {
 		Usage()
-		os.Exit(1)
 	}
 	for _, cmd := range commands {
 		if cmd.Name == args[0] {
-			cmd.Run()
-			return
+			return cmd.Run()
 		}
 	}
-	flag.Usage()
+	Usage()
+	return nil
 }
 
 // Returns the arguments after the command argument
@@ -40,7 +39,7 @@ func Args() []string {
 }
 
 // Adds a command
-func Add(n string, r func(), u string) {
+func Add(n string, r func() error, u string) {
 	commands = append(commands, &Command{n, r, u})
 }
 
@@ -65,4 +64,5 @@ func Usage() {
 		console.Println("     ", c.Name, "      ", c.Usage)
 	}
 	console.Flush()
+	os.Exit(1)
 }
