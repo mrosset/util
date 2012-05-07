@@ -10,7 +10,7 @@ import (
 type Command struct {
 	Name  string       // Name of the command line argument
 	Run   func() error // Function associated with command
-	Usage string       // Usage test
+	Usage string       // Usage text
 }
 
 var (
