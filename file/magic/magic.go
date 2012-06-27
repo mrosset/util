@@ -1,6 +1,7 @@
 package magic
 
 import (
+	"compress/bzip2"
 	"compress/gzip"
 	"fmt"
 	"io"
@@ -90,7 +91,8 @@ func GetReader(path string) (r io.Reader, err error) {
 	case MagicGnuTar, MagicPosixTar:
 		return fd, nil
 	case MagicBzip:
-		return fd, nil
+		bz := bzip2.NewReader(fd)
+		return bz, nil
 	}
 	return nil, fmt.Errorf("Unknown reader for: %s", path)
 }

@@ -1,6 +1,8 @@
 package file
 
 import (
+	"crypto/md5"
+	"fmt"
 	"io"
 	"os"
 	"path"
@@ -39,4 +41,15 @@ func Cat(path string) error {
 	defer fd.Close()
 	_, err = io.Copy(os.Stderr, fd)
 	return err
+}
+
+func Md5(file string) (hash string, err error) {
+	h := md5.New()
+	fd, err := os.Open(file)
+	if err != nil {
+		return "", err
+	}
+	defer fd.Close()
+	io.Copy(h, fd)
+	return fmt.Sprintf("%X", h.Sum(nil)), err
 }

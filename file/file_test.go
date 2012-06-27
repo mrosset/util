@@ -29,6 +29,19 @@ func TestExists(t *testing.T) {
 	}
 }
 
+func TestHash(t *testing.T) {
+	var (
+		expect = "4528E6A7BB9341C36C425FAF40EF32C3"
+	)
+	hash, err := Md5("pass.md5")
+	if err != nil {
+		t.Error(err)
+	}
+	if expect != hash {
+		t.Errorf("expected %s got %s", expect, hash)
+	}
+}
+
 func TestExpand(t *testing.T) {
 	expect := os.Getenv("HOME")
 	if got := Path("$HOME").Expand(); got != expect {
