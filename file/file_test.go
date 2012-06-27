@@ -33,7 +33,7 @@ func TestHash(t *testing.T) {
 	var (
 		expect = "4528E6A7BB9341C36C425FAF40EF32C3"
 	)
-	hash, err := Md5("pass.md5")
+	hash, err := Md5("testdata/pass.md5")
 	if err != nil {
 		t.Error(err)
 	}
