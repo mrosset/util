@@ -19,7 +19,6 @@ func TestExists(t *testing.T) {
 		}
 		t.Logf("%s -> %v", f, exists)
 	}
-
 	for _, f := range notExistFiles {
 		exists := Exists(f)
 		if exists {

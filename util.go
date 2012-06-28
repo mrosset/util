@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -13,12 +12,12 @@ import (
 )
 
 var (
-	Verbose = false
-	errbuf  = new(bytes.Buffer)
+	errbuf = new(bytes.Buffer)
 )
 
 func init() {
-	log.SetFlags(0)
+	log.SetPrefix("util: ")
+	log.SetFlags(log.Lshortfile)
 }
 
 func CheckFatal(err error) {
@@ -29,17 +28,15 @@ func CheckFatal(err error) {
 	}
 }
 
-func Run(bin, dir string, args ...string) (err error) {
-	cmd := exec.Command(bin, args...)
+func Run(args ...string) (err error) {
+	return RunIn(".", args...)
+}
+
+func RunIn(dir string, args ...string) (err error) {
+	log.Printf("Running %s %s", args[0], args[1:])
+	cmd := exec.Command(args[0], args[1:]...)
 	cmd.Dir = dir
-	if Verbose {
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-	}
-	cmd.Stderr = errbuf
-	if err = cmd.Run(); err != nil {
-		io.Copy(os.Stderr, errbuf)
-		return err
-	}
-	return nil
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
 }
