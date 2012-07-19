@@ -85,19 +85,44 @@ func Read(v interface{}, path string) (err error) {
 	return err
 }
 
+func Clean(v interface{}, w io.Writer) (err error) {
+	buf := new(bytes.Buffer)
+	err = WritePretty(v, buf)
+	if err != nil {
+		return err
+	}
+	for {
+		b, err := buf.ReadByte()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+		switch b {
+		case '{', '}', '"', ',', '[', ']', '\t':
+			continue
+		default:
+			w.Write([]byte{b})
+		}
+	}
+	return nil
+}
+
 // PrintPretty marshal's an interface and ouputs formatted json to writer.
-func WritePretty(v interface{}, writer io.Writer) (err error) {
+func WritePretty(v interface{}, w io.Writer) (err error) {
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
 	}
 	buf := new(bytes.Buffer)
 	err = json.Indent(buf, b, "", "\t")
+	//err = json.Compact(buf, b)
 	if err != nil {
 		return err
 	}
 	br := bufio.NewReader(buf)
-	tw := tabwriter.NewWriter(writer, 8, 0, 1, ' ', 0)
+	tw := tabwriter.NewWriter(w, 4, 0, 1, ' ', 0)
 	for {
 		b, _, err := br.ReadLine()
 		if err == io.EOF {
@@ -107,7 +132,7 @@ func WritePretty(v interface{}, writer io.Writer) (err error) {
 			return err
 		}
 		line := string(b) + "\n"
-		line = strings.Replace(line, ": \"", ":\t\"", -1)
+		line = strings.Replace(line, ":", "\t:", 1)
 		_, err = tw.Write([]byte(line))
 		if err != nil {
 			return err
