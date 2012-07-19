@@ -23,8 +23,8 @@ func Exists(path string) bool {
 	return !os.IsNotExist(err)
 }
 
-func Copy(path string, w io.Writer) error {
-	fd, err := os.Open(path)
+func Copy(w io.Writer, src string) error {
+	fd, err := os.Open(src)
 	if err != nil {
 		return err
 	}

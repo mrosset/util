@@ -61,7 +61,7 @@ func Usage() {
 	flag.Usage()
 	fmt.Println("Commands: ")
 	for _, c := range commands {
-		console.Println("     ", c.Name, "      ", c.Usage)
+		console.Println(c.Name, c.Usage)
 	}
 	console.Flush()
 	os.Exit(1)

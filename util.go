@@ -12,15 +12,15 @@ import (
 )
 
 var (
-	errbuf = new(bytes.Buffer)
+	errbuf  = new(bytes.Buffer)
+	Verbose = false
 )
 
 func init() {
-	log.SetPrefix("util: ")
 	log.SetFlags(log.Lshortfile)
 }
 
-func CheckFatal(err error) {
+func checkFatal(err error) {
 	if err != nil {
 		_, file, line, _ := runtime.Caller(1)
 		errFmt := fmt.Sprintf("%s:%v %s", path.Base(file), line, err)
@@ -33,10 +33,19 @@ func Run(args ...string) (err error) {
 }
 
 func RunIn(dir string, args ...string) (err error) {
-	log.Printf("Running %s %s", args[0], args[1:])
+	if Verbose {
+		log.Printf("Running %s %s\n", args[0], args[1:])
+	}
 	cmd := exec.Command(args[0], args[1:]...)
 	cmd.Dir = dir
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
+}
+
+func Start(args ...string) (err error) {
+	cmd := exec.Command(args[0], args[1:]...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Start()
 }
