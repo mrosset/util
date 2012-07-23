@@ -23,6 +23,23 @@ func Exists(path string) bool {
 	return !os.IsNotExist(err)
 }
 
+func Move(dst string, src string) error {
+	fi, err := os.Stat(src)
+	if err != nil {
+		return err
+	}
+	fd, err := os.OpenFile(dst, os.O_CREATE|os.O_WRONLY, fi.Mode())
+	if err != nil {
+		return err
+	}
+	defer fd.Close()
+	err = Copy(fd, src)
+	if err != nil {
+		return err
+	}
+	return os.Remove(src)
+}
+
 func Copy(w io.Writer, src string) error {
 	fd, err := os.Open(src)
 	if err != nil {

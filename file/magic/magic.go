@@ -15,7 +15,7 @@ type MagicBytes struct {
 }
 
 type FileMagic struct {
-	enum  Magic
+	Enum  Magic
 	magic MagicBytes
 	human string
 }
@@ -32,6 +32,7 @@ const (
 	MagicGnuTar
 	MagicBzip
 	MagicMP3
+	MagicElf
 )
 
 var (
@@ -41,10 +42,11 @@ var (
 		FileMagic{MagicGnuTar, MagicBytes{109, 112}, "tar archive"},
 		FileMagic{MagicBzip, MagicBytes{66, 90}, "bzip compressed data"},
 		FileMagic{MagicMP3, MagicBytes{73, 68}, "MPEG Layer III audio"},
+		FileMagic{MagicElf, MagicBytes{127, 69}, "Elf binary"},
 	}
 )
 
-func getBytes(path string) (b []byte, err error) {
+func GetBytes(path string) (b []byte, err error) {
 	b = make([]byte, 2)
 	fd, err := os.Open(path)
 	if err != nil {
@@ -59,7 +61,7 @@ func getBytes(path string) (b []byte, err error) {
 }
 
 func GetFileMagic(path string) (FileMagic, error) {
-	b, err := getBytes(path)
+	b, err := GetBytes(path)
 	if err != nil {
 		return FileMagic{}, err
 	}
@@ -81,7 +83,7 @@ func GetReader(path string) (r io.Reader, err error) {
 	if err != nil {
 		return nil, err
 	}
-	switch fm.enum {
+	switch fm.Enum {
 	case MagicGzip:
 		gz, err := gzip.NewReader(fd)
 		if err != nil {

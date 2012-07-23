@@ -134,6 +134,7 @@ func WritePretty(v interface{}, w io.Writer) (err error) {
 		line := string(b) + "\n"
 		line = strings.Replace(line, ":", "\t:", 1)
 		line = strings.Replace(line, "],", "],\t", 1)
+		line = strings.Replace(line, "},", "},\t", 1)
 		_, err = tw.Write([]byte(line))
 		if err != nil {
 			return err

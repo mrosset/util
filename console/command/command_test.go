@@ -8,7 +8,7 @@ import (
 func TestCommands(t *testing.T) {
 	Add("test", test, "test function")
 	Add("test1", test1, "test1 function")
-	for _, c := range commands {
+	for _, c := range Commands {
 		c.Run()
 	}
 }
