@@ -13,8 +13,8 @@ import (
 	"text/tabwriter"
 )
 
-// WriteGzJson marshal's a interface, and writes it to a gzipped file.
-func WriteGzJson(v interface{}, file string) (err error) {
+// Marshal's a interface, and writes it to a gzipped file.
+func WriteGz(v interface{}, file string) (err error) {
 	fd, err := os.Create(file)
 	if err != nil {
 		return err
@@ -23,8 +23,8 @@ func WriteGzJson(v interface{}, file string) (err error) {
 	return WriteGzIo(v, fd)
 }
 
-// ReadGzJson read a gzipped json file and decodes it into an interface.
-func ReadGzJson(v interface{}, file string) (err error) {
+// Read a gzipped json file and decodes it into an interface.
+func ReadGz(v interface{}, file string) (err error) {
 	fd, err := os.Open(file)
 	if err != nil {
 		return err
