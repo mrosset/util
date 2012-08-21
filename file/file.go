@@ -50,13 +50,13 @@ func Copy(w io.Writer, src string) error {
 	return err
 }
 
-func Cat(path string) error {
+func Cat(w io.Writer, path string) error {
 	fd, err := os.Open(path)
 	if err != nil {
 		return err
 	}
 	defer fd.Close()
-	_, err = io.Copy(os.Stderr, fd)
+	_, err = io.Copy(w, fd)
 	return err
 }
 

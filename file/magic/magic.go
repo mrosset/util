@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"os/exec"
 )
 
 type MagicBytes struct {
@@ -33,6 +34,7 @@ const (
 	MagicBzip
 	MagicMP3
 	MagicElf
+	MagicXZ
 )
 
 var (
@@ -43,6 +45,7 @@ var (
 		FileMagic{MagicBzip, MagicBytes{66, 90}, "bzip compressed data"},
 		FileMagic{MagicMP3, MagicBytes{73, 68}, "MPEG Layer III audio"},
 		FileMagic{MagicElf, MagicBytes{127, 69}, "Elf binary"},
+		FileMagic{MagicXZ, MagicBytes{253, 55}, "XZ compressed data"},
 	}
 )
 
@@ -95,6 +98,14 @@ func GetReader(path string) (r io.Reader, err error) {
 	case MagicBzip:
 		bz := bzip2.NewReader(fd)
 		return bz, nil
+	case MagicXZ:
+		xz := exec.Command("xzcat")
+		xz.Stdin = fd
+		r, err := xz.StdoutPipe()
+		if err != nil {
+			return nil, err
+		}
+		return r, xz.Start()
 	}
 	return nil, fmt.Errorf("Unknown reader for: %s", path)
 }
