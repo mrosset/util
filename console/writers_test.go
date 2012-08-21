@@ -2,33 +2,24 @@ package console
 
 import (
 	"fmt"
-	"io"
+	"github.com/str1ngs/util/human"
 	"os"
 	"testing"
 )
 
-var testfile = "writers.go"
+const BUFSIZE = 4096
 
 func TestProgress(t *testing.T) {
-	fi, err := os.Stat(testfile)
+	size := int64(1024 * 1024)
+	fd, err := os.Open(os.DevNull)
 	if err != nil {
-		t.Fatal(err)
+		t.Error(err)
 	}
-	fd, err := os.Open(testfile)
-	if err != nil {
-		t.Fatal(err)
+	pw := NewProgressBarWriter(os.DevNull, size, fd)
+	buf := make([]byte, BUFSIZE)
+	for i := int64(0); i < size; i += BUFSIZE {
+		pw.Write(buf)
 	}
-	defer fd.Close()
-	nw, err := os.Create("new.file")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer nw.Close()
-	defer os.Remove("new.file")
-	pw := NewProgressBarWriter(testfile, fi.Size(), nw)
-	_, err = io.Copy(pw, fd)
-	if err != nil {
-		t.Fatal(err)
-	}
-	fmt.Println()
+	pw.Close()
+	fmt.Println("wrote", human.ByteSize(size), ">", os.DevNull)
 }

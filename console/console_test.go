@@ -5,6 +5,7 @@ import (
 	"path"
 	"path/filepath"
 	"testing"
+	"time"
 )
 
 func TestFileList(t *testing.T) {
@@ -29,4 +30,13 @@ func TestConsoleOutput(t *testing.T) {
 		Println(short, i)
 	}
 	Flush()
+}
+
+func TestProgressBar(t *testing.T) {
+	total := 100
+	pb := NewProgressBar("test", 1, 100)
+	for i := 0; i < total; i++ {
+		time.Sleep(time.Second / 100)
+		pb.Step()
+	}
 }

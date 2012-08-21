@@ -23,7 +23,7 @@ func (self *ProgressBarWriter) Write(b []byte) (n int, err error) {
 	}
 	switch {
 	case self.total > 0:
-		self.done = self.done + int64(len(b))
+		self.done += int64(len(b))
 		percent := int((self.done * 100) / self.total)
 		width := (80 - 9) - 32
 		progress := (width * percent) / 100
