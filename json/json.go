@@ -78,11 +78,7 @@ func Read(v interface{}, path string) (err error) {
 		return err
 	}
 	defer fd.Close()
-	err = json.NewDecoder(fd).Decode(v)
-	if err != nil {
-		return err
-	}
-	return err
+	return json.NewDecoder(fd).Decode(v)
 }
 
 func Clean(v interface{}, w io.Writer) (err error) {
@@ -132,7 +128,7 @@ func WritePretty(v interface{}, w io.Writer) (err error) {
 			return err
 		}
 		line := string(b) + "\n"
-		line = strings.Replace(line, ":", "\t:", 1)
+		line = strings.Replace(line, "\":", "\"\t:", 1)
 		line = strings.Replace(line, "],", "],\t", 1)
 		line = strings.Replace(line, "},", "},\t", 1)
 		_, err = tw.Write([]byte(line))
