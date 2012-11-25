@@ -70,3 +70,9 @@ func Md5(file string) (hash string, err error) {
 	io.Copy(h, fd)
 	return fmt.Sprintf("%X", h.Sum(nil)), err
 }
+
+func Md5Path(path string) (hash string) {
+	h := md5.New()
+	h.Write([]byte(path))
+	return fmt.Sprintf("%X", h.Sum(nil))
+}
