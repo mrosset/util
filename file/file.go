@@ -23,6 +23,15 @@ func Exists(path string) bool {
 	return !os.IsNotExist(err)
 }
 
+func Touch(path string) error {
+	fd, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	fd.Close()
+	return nil
+}
+
 func Move(dst string, src string) error {
 	fi, err := os.Stat(src)
 	if err != nil {

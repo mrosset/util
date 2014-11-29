@@ -10,6 +10,7 @@ var (
 	existsFiles   = []string{"../util.go", "file.go"}
 	notExistFiles = []string{"aaaaaaaa", "bbbbbbbbb"}
 	testFile      = "testdata/pass.md5"
+	touchFile     = "testdata/touch"
 )
 
 func TestExists(t *testing.T) {
@@ -29,6 +30,21 @@ func TestExists(t *testing.T) {
 	}
 }
 
+func TestTouch(t *testing.T) {
+	expect := true
+	t.Logf("touching %s", touchFile)
+	err := Touch(touchFile)
+	if err != nil {
+		t.Error(err)
+	}
+	got := Exists(touchFile)
+	t.Logf("%s -> %v", touchFile, got)
+	if expect != got {
+		t.Errorf("%s touch file does not exists", touchFile)
+	}
+	os.Remove(touchFile)
+}
+
 func TestExpand(t *testing.T) {
 	expect := os.Getenv("HOME")
 	if got := Path("$HOME").Expand(); got != expect {
@@ -43,7 +59,7 @@ func TestJoin(t *testing.T) {
 	}
 }
 
-func TestCat(t *testing.T) {
+func Testcat(t *testing.T) {
 	err := Cat(os.Stdout, "file.go")
 	if err != nil {
 		t.Error(err)
