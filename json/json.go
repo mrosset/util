@@ -13,6 +13,10 @@ import (
 	"text/tabwriter"
 )
 
+var (
+	client = new(http.Client)
+)
+
 // Marshal's a interface, and writes it to a gzipped file.
 func WriteGz(v interface{}, file string) (err error) {
 	fd, err := os.Create(file)
@@ -137,4 +141,12 @@ func WritePretty(v interface{}, w io.Writer) (err error) {
 		}
 	}
 	return tw.Flush()
+}
+
+func Get(v interface{}, url string) (err error) {
+	resp, err := client.Get(url)
+	if err != nil {
+		return err
+	}
+	return json.NewDecoder(resp.Body).Decode(v)
 }
