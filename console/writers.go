@@ -29,7 +29,7 @@ func (pbw *ProgressBarWriter) Write(b []byte) (n int, err error) {
 		progress := (width * percent) / 100
 		bar := strings.Repeat("#", int(progress))
 		bps := float64(pbw.done) / time.Now().Sub(pbw.start).Seconds()
-		fmt.Printf("\r[%-*s] %s/s %3.3s%% %-20.20s", width, bar, human.ByteSize(bps), strconv.Itoa(percent), pbw.prefix)
+		fmt.Printf("\r[%-*s] %s/s %3.3s%% %s", width, bar, human.ByteSize(bps), strconv.Itoa(percent), pbw.prefix)
 	default:
 		fmt.Printf("\r%-20.20s", pbw.prefix)
 	}
