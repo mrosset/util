@@ -17,3 +17,13 @@ func TestWritePretty(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestGetFail(t *testing.T) {
+	var (
+		got = Get(nil, "http://localhost:10000")
+	)
+	if got == nil {
+		t.Logf("expect %v -> got %s", nil, got)
+		t.Error(got)
+	}
+}

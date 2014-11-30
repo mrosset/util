@@ -5,9 +5,11 @@ import (
 	"bytes"
 	"compress/gzip"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/str1ngs/util/file"
 	"io"
+	"net/http"
 	"os"
 	"strings"
 	"text/tabwriter"
@@ -147,6 +149,10 @@ func Get(v interface{}, url string) (err error) {
 	resp, err := client.Get(url)
 	if err != nil {
 		return err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return errors.New(resp.Status)
 	}
 	return json.NewDecoder(resp.Body).Decode(v)
 }
