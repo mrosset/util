@@ -1,0 +1,8 @@
+{
+    "Name"        : "plan",
+    "Loooooooong" : "Long",
+    "Short"       : "Short",
+    "Version"     : "1.0",
+    "UrlExpect"   : "http://ftp.gnu.org/gnu/plan-1.0.tar.gz",
+    "Url"         : "http://ftp.gnu.org/gnu/{{.Name}}-{{.Version}}.tar.gz"
+}

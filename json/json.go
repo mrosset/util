@@ -13,6 +13,7 @@ import (
 	"os"
 	"strings"
 	"text/tabwriter"
+	"text/template"
 )
 
 var (
@@ -74,7 +75,7 @@ func Write(v interface{}, path string) (err error) {
 	return WritePretty(v, fd)
 }
 
-// Read opens a json file and decodes it into interface
+// Reads a json file and decodes it into interface
 func Read(v interface{}, path string) (err error) {
 	if !file.Exists(path) {
 		return fmt.Errorf("%s does not exist.", path)
@@ -85,6 +86,27 @@ func Read(v interface{}, path string) (err error) {
 	}
 	defer fd.Close()
 	return json.NewDecoder(fd).Decode(v)
+}
+
+// Reads a json file and parses fields
+func ReadTemplate(v interface{}, path string) (err error) {
+	if !file.Exists(path) {
+		return fmt.Errorf("%s does not exist.", path)
+	}
+	err = Read(v, path)
+	if err != nil {
+		return err
+	}
+	tmpl, err := template.ParseFiles(path)
+	if err != nil {
+		return err
+	}
+	buf := new(bytes.Buffer)
+	err = tmpl.Execute(buf, v)
+	if err != nil {
+		return err
+	}
+	return json.NewDecoder(buf).Decode(v)
 }
 
 func Clean(v interface{}, w io.Writer) (err error) {
@@ -109,6 +131,15 @@ func Clean(v interface{}, w io.Writer) (err error) {
 		}
 	}
 	return nil
+}
+
+func Format(in io.Reader, out io.Writer) error {
+	var v interface{}
+	err := json.NewDecoder(in).Decode(&v)
+	if err != nil {
+		return err
+	}
+	return WritePretty(v, out)
 }
 
 // PrintPretty marshal's an interface and ouputs formatted json to writer.
@@ -145,6 +176,7 @@ func WritePretty(v interface{}, w io.Writer) (err error) {
 	return tw.Flush()
 }
 
+// Decodes a URL to interface
 func Get(v interface{}, url string) (err error) {
 	resp, err := client.Get(url)
 	if err != nil {
