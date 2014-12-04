@@ -88,25 +88,40 @@ func Read(v interface{}, path string) (err error) {
 	return json.NewDecoder(fd).Decode(v)
 }
 
+type Template interface {
+	SetTemplate(interface{})
+}
+
+func Execute(t Template) error {
+	in := new(bytes.Buffer)
+	// encode interface to json
+	t.SetTemplate(t)
+	err := json.NewEncoder(in).Encode(t)
+	if err != nil {
+		return err
+	}
+	tmpl, err := template.New("").Parse(in.String())
+	if err != nil {
+		return err
+	}
+
+	out := new(bytes.Buffer)
+	// execute template to out buffer
+	err = tmpl.Execute(out, t)
+	if err != nil {
+		return err
+	}
+	// finally decode the executed template
+	return json.NewDecoder(out).Decode(t)
+}
+
 // Reads a json file and parses fields
-func ReadTemplate(v interface{}, path string) (err error) {
-	if !file.Exists(path) {
-		return fmt.Errorf("%s does not exist.", path)
-	}
-	err = Read(v, path)
+func ReadTemplate(t Template, path string) error {
+	err := Read(t, path)
 	if err != nil {
 		return err
 	}
-	tmpl, err := template.ParseFiles(path)
-	if err != nil {
-		return err
-	}
-	buf := new(bytes.Buffer)
-	err = tmpl.Execute(buf, v)
-	if err != nil {
-		return err
-	}
-	return json.NewDecoder(buf).Decode(v)
+	return Execute(t)
 }
 
 func Clean(v interface{}, w io.Writer) (err error) {
