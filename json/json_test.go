@@ -15,10 +15,9 @@ type Test struct {
 	template    *Test
 }
 
-func (t *Test) SetTemplate(i interface{}) error {
+func (t *Test) SetTemplate(i interface{}) {
 	c := *i.(*Test)
 	t.template = &c
-	return nil
 }
 
 var (
