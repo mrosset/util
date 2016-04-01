@@ -25,7 +25,7 @@ func (pbw *ProgressBarWriter) Write(b []byte) (n int, err error) {
 	case pbw.total > 0:
 		pbw.done += int64(len(b))
 		percent := int((pbw.done * 100) / pbw.total)
-		width := (80 - 9) - 32
+		width := (80 - 9) - 40
 		progress := (width * percent) / 100
 		bar := strings.Repeat("#", int(progress))
 		bps := float64(pbw.done) / time.Now().Sub(pbw.start).Seconds()
