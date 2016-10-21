@@ -9,7 +9,7 @@ import (
 var (
 	existsFiles   = []string{"../util.go", "file.go"}
 	notExistFiles = []string{"aaaaaaaa", "bbbbbbbbb"}
-	testFile      = "testdata/pass.md5"
+	testFile      = "testdata/pass"
 	touchFile     = "testdata/touch"
 )
 
@@ -63,6 +63,19 @@ func Testcat(t *testing.T) {
 	err := Cat(os.Stdout, "file.go")
 	if err != nil {
 		t.Error(err)
+	}
+}
+
+func TestSha256sum(t *testing.T) {
+	var (
+		expect = "9F56E761D79BFDB34304A012586CB04D16B435EF6130091A97702E559260A2F2"
+	)
+	got, err := Sha256sum(testFile)
+	if err != nil {
+		t.Error(err)
+	}
+	if expect != got {
+		t.Errorf("expected %s got %s", expect, got)
 	}
 }
 
