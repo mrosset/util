@@ -10,7 +10,38 @@ type Template interface {
 	SetTemplate(interface{})
 }
 
-func Execute(t Template) error {
+// Encodes a struct into json and then Parses it as a go/template. It then
+// decodes it back into a complete struct.
+func Execute(out, in interface{}) error {
+	var (
+		buf = new(bytes.Buffer)
+	)
+
+	// encode interface to json
+	err := json.NewEncoder(buf).Encode(in)
+	if err != nil {
+		return err
+	}
+
+	// parse the json as a template
+	tmpl, err := template.New("").Parse(buf.String())
+	if err != nil {
+		return err
+	}
+
+	buf.Reset()
+
+	// execute template to out buffer
+	err = tmpl.Execute(buf, in)
+	if err != nil {
+		return (err)
+	}
+
+	// finally decode the executed template
+	return json.NewDecoder(buf).Decode(out)
+}
+
+func OExecute(t Template) error {
 	in := new(bytes.Buffer)
 	// encode interface to json
 	t.SetTemplate(t)
@@ -33,6 +64,7 @@ func Execute(t Template) error {
 	return json.NewDecoder(out).Decode(t)
 }
 
+/*
 // Reads a json file and parses fields
 func ReadTemplate(t Template, path string) error {
 	err := Read(t, path)
@@ -41,3 +73,5 @@ func ReadTemplate(t Template, path string) error {
 	}
 	return Execute(t)
 }
+
+*/
