@@ -43,22 +43,6 @@ func TestWrite(t *testing.T) {
 	}
 }
 
-func TestExecute(t *testing.T) {
-	var (
-		in = &Test{
-			Version: "1.0",
-			Url:     "http://ftp.gnu.org/gnu/plan-{{.Version}}.tar.gz",
-		}
-		got    = &Test{}
-		expect = "http://ftp.gnu.org/gnu/plan-1.0.tar.gz"
-	)
-
-	Execute(got, in)
-	if got.Url != expect {
-		t.Errorf("expected %s got %s", expect, got.Url)
-	}
-}
-
 /*
 func TestTemplate(t *testing.T) {
 	v := testStruct

@@ -6,13 +6,13 @@ import (
 	"text/template"
 )
 
-type Template interface {
+type JsonTemplate interface {
 	SetTemplate(interface{})
 }
 
 // Encodes a struct into json and then Parses it as a go/template. It then
 // decodes it back into a complete struct.
-func Execute(out, in interface{}) error {
+func Parse(out, in interface{}) error {
 	var (
 		buf = new(bytes.Buffer)
 	)
@@ -34,14 +34,14 @@ func Execute(out, in interface{}) error {
 	// execute template to out buffer
 	err = tmpl.Execute(buf, in)
 	if err != nil {
-		return (err)
+		return err
 	}
 
 	// finally decode the executed template
 	return json.NewDecoder(buf).Decode(out)
 }
 
-func OExecute(t Template) error {
+func OExecute(t JsonTemplate) error {
 	in := new(bytes.Buffer)
 	// encode interface to json
 	t.SetTemplate(t)
