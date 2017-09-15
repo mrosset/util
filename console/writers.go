@@ -2,7 +2,7 @@ package console
 
 import (
 	"fmt"
-	"github.com/str1ngs/util/human"
+	"github.com/mrosset/util/human"
 	"io"
 	"strconv"
 	"strings"
