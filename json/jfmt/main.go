@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/str1ngs/util/json"
+	"github.com/mrosset/util/json"
 	"io"
 	"log"
 	"os"
