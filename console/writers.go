@@ -35,15 +35,15 @@ func (pw *ProgressBarWriter) Write(b []byte) (n int, err error) {
 	default:
 		pb.UpdateTitle(pw.prefix)
 	}
-	if percent >= pw.progressbar.Current {
+	if percent > pw.progressbar.Current {
 
 		pb.Increment()
 	}
 	return pw.w.Write(b)
 }
 
-func (p *ProgressBarWriter) Close() error {
-	fmt.Println()
+func (pw *ProgressBarWriter) Close() error {
+	pw.progressbar.Increment()
 	return nil
 }
 func NewProgressBarWriter(p string, size int64, w io.Writer) *ProgressBarWriter {
