@@ -32,7 +32,7 @@ func TestConsoleOutput(t *testing.T) {
 	Flush()
 }
 
-func TestProgressBar(t *testing.T) {
+func testProgressBar(t *testing.T) {
 	total := 100
 	pb := NewProgressBar("test", 1, 100)
 	for i := 0; i < total; i++ {

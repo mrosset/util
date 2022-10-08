@@ -2,44 +2,59 @@ package console
 
 import (
 	"fmt"
-	"github.com/mrosset/util/human"
 	"io"
-	"strconv"
-	"strings"
 	"time"
+
+	"github.com/mrosset/util/human"
+	"github.com/pterm/pterm"
 )
 
 type ProgressBarWriter struct {
-	total  int64
-	w      io.Writer
-	done   int64
-	start  time.Time
-	prefix string
+	total       int64
+	w           io.Writer
+	done        int64
+	start       time.Time
+	prefix      string
+	progressbar *pterm.ProgressbarPrinter
 }
 
-func (pbw *ProgressBarWriter) Write(b []byte) (n int, err error) {
-	if pbw.done == 0 {
-		pbw.start = time.Now()
+func (pw *ProgressBarWriter) Write(b []byte) (n int, err error) {
+	var (
+		percent = int((pw.done * 100) / pw.total)
+		pb      = pw.progressbar
+		bps     = float64(pw.done) / time.Now().Sub(pw.start).Seconds()
+	)
+	if pw.done == 0 {
+		pw.start = time.Now()
 	}
+	pw.done += int64(len(b))
 	switch {
-	case pbw.total > 0:
-		pbw.done += int64(len(b))
-		percent := int((pbw.done * 100) / pbw.total)
-		width := (80 - 9) - 40
-		progress := (width * percent) / 100
-		bar := strings.Repeat("#", int(progress))
-		bps := float64(pbw.done) / time.Now().Sub(pbw.start).Seconds()
-		fmt.Printf("\r[%-*s] %s/s %3.3s%% %s", width, bar, human.ByteSize(bps), strconv.Itoa(percent), pbw.prefix)
+	case pw.total > 0:
+		title := fmt.Sprintf("%s %s/s", pw.prefix, human.ByteSize(bps))
+		pb.UpdateTitle(title)
 	default:
-		fmt.Printf("\r%-20.20s", pbw.prefix)
+		pb.UpdateTitle(pw.prefix)
 	}
-	return pbw.w.Write(b)
+	if percent >= pw.progressbar.Current {
+
+		pb.Increment()
+	}
+	return pw.w.Write(b)
 }
 
-func (pbw *ProgressBarWriter) Close() error {
+func (p *ProgressBarWriter) Close() error {
 	fmt.Println()
 	return nil
 }
-func NewProgressBarWriter(p string, t int64, w io.Writer) *ProgressBarWriter {
-	return &ProgressBarWriter{prefix: p, total: t, w: w}
+func NewProgressBarWriter(p string, size int64, w io.Writer) *ProgressBarWriter {
+	progress, err := pterm.DefaultProgressbar.WithTotal(100).Start()
+	if err != nil {
+		panic(err)
+	}
+	return &ProgressBarWriter{
+		prefix:      p,
+		total:       size,
+		w:           w,
+		progressbar: progress,
+	}
 }
