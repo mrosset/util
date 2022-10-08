@@ -78,26 +78,3 @@ func TestSha256sum(t *testing.T) {
 		t.Errorf("expected %s got %s", expect, got)
 	}
 }
-
-func TestMd5(t *testing.T) {
-	var (
-		expect = "4528E6A7BB9341C36C425FAF40EF32C3"
-	)
-	got, err := Md5(testFile)
-	if err != nil {
-		t.Error(err)
-	}
-	if expect != got {
-		t.Errorf("expected %s got %s", expect, got)
-	}
-}
-
-func TestMd5Path(t *testing.T) {
-	var (
-		expect = "8EE1066C618D504704A7C188C873BBBB"
-		got    = Md5Path(testFile)
-	)
-	if expect != got {
-		t.Errorf("expected %s got %s", expect, got)
-	}
-}

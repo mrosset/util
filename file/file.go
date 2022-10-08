@@ -1,7 +1,6 @@
 package file
 
 import (
-	"crypto/md5"
 	"crypto/sha256"
 	"fmt"
 	"io"
@@ -80,21 +79,4 @@ func Sha256sum(file string) (hash string, err error) {
 	defer fd.Close()
 	io.Copy(h, fd)
 	return fmt.Sprintf("%X", h.Sum(nil)), err
-}
-
-func Md5(file string) (hash string, err error) {
-	h := md5.New()
-	fd, err := os.Open(file)
-	if err != nil {
-		return "", err
-	}
-	defer fd.Close()
-	io.Copy(h, fd)
-	return fmt.Sprintf("%X", h.Sum(nil)), err
-}
-
-func Md5Path(path string) (hash string) {
-	h := md5.New()
-	h.Write([]byte(path))
-	return fmt.Sprintf("%X", h.Sum(nil))
 }
