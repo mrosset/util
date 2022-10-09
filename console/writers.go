@@ -10,18 +10,31 @@ import (
 )
 
 type ProgressBarWriter struct {
-	total       int64
-	w           io.Writer
-	done        int64
-	start       time.Time
-	prefix      string
-	progressbar *pterm.ProgressbarPrinter
+	total  int64
+	w      io.Writer
+	done   int64
+	start  time.Time
+	prefix string
+	Bar    *pterm.ProgressbarPrinter
+}
+
+func NewProgressBarWriter(p string, size int64, w io.Writer) *ProgressBarWriter {
+	progress, err := pterm.DefaultProgressbar.WithTotal(100).Start()
+	if err != nil {
+		panic(err)
+	}
+	return &ProgressBarWriter{
+		prefix: p,
+		total:  size,
+		w:      w,
+		Bar:    progress,
+	}
 }
 
 func (pw *ProgressBarWriter) Write(b []byte) (n int, err error) {
 	var (
 		percent = int((pw.done * 100) / pw.total)
-		pb      = pw.progressbar
+		pb      = pw.Bar
 		bps     = float64(pw.done) / time.Now().Sub(pw.start).Seconds()
 	)
 	if pw.done == 0 {
@@ -35,7 +48,7 @@ func (pw *ProgressBarWriter) Write(b []byte) (n int, err error) {
 	default:
 		pb.UpdateTitle(pw.prefix)
 	}
-	if percent > pw.progressbar.Current {
+	if percent > pw.Bar.Current {
 
 		pb.Increment()
 	}
@@ -43,20 +56,7 @@ func (pw *ProgressBarWriter) Write(b []byte) (n int, err error) {
 }
 
 func (pw *ProgressBarWriter) Close() error {
-	pw.progressbar.Increment()
-	pw.progressbar.Stop()
+	pw.Bar.Increment()
+	pw.Bar.Stop()
 	return nil
-}
-
-func NewProgressBarWriter(p string, size int64, w io.Writer) *ProgressBarWriter {
-	progress, err := pterm.DefaultProgressbar.WithTotal(100).Start()
-	if err != nil {
-		panic(err)
-	}
-	return &ProgressBarWriter{
-		prefix:      p,
-		total:       size,
-		w:           w,
-		progressbar: progress,
-	}
 }
