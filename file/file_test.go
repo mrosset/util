@@ -19,26 +19,22 @@ func TestExists(t *testing.T) {
 		if !exists {
 			t.Errorf("expect to find %s got %v", f, exists)
 		}
-		t.Logf("%s -> %v", f, exists)
 	}
 	for _, f := range notExistFiles {
 		exists := Exists(f)
 		if exists {
 			t.Errorf("expect not to find %s got %v", f, exists)
 		}
-		t.Logf("%s -> %v", f, exists)
 	}
 }
 
 func TestTouch(t *testing.T) {
 	expect := true
-	t.Logf("touching %s", touchFile)
 	err := Touch(touchFile)
 	if err != nil {
 		t.Error(err)
 	}
 	got := Exists(touchFile)
-	t.Logf("%s -> %v", touchFile, got)
 	if expect != got {
 		t.Errorf("%s touch file does not exists", touchFile)
 	}
