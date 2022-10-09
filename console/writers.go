@@ -44,8 +44,10 @@ func (pw *ProgressBarWriter) Write(b []byte) (n int, err error) {
 
 func (pw *ProgressBarWriter) Close() error {
 	pw.progressbar.Increment()
+	pw.progressbar.Stop()
 	return nil
 }
+
 func NewProgressBarWriter(p string, size int64, w io.Writer) *ProgressBarWriter {
 	progress, err := pterm.DefaultProgressbar.WithTotal(100).Start()
 	if err != nil {
