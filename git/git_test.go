@@ -8,6 +8,7 @@ import (
 )
 
 const (
+	// TODO: use in memory repository instead?
 	GIT_URI = "https://github.com/mrosset/via-test"
 )
 
